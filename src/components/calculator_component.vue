@@ -138,7 +138,7 @@
 
 .display {
   grid-column: 1 / 5;
-  background-color: #333;
+  background-color: #836262;
   color: white;
 }
 
@@ -152,7 +152,7 @@
 }
 
 .operator {
-  background-color: orange;
+  background-color: rgb(40, 105, 27);
   color: white;
 }
 
@@ -161,6 +161,7 @@
 }
 
 .history h2 {
+    
     font-size: 18px;
     margin-bottom: 5px;
 }
@@ -171,6 +172,9 @@
 }
 
 .history li {
+    
+    width: px;
+    background-color: darkblue;
     font-size: 14px;
     margin-bottom: 5px;
 }
