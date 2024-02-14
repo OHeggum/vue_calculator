@@ -8,7 +8,7 @@
 
 <script>
 import Calculator from './components/calculator_component.vue'
-import Calculator_history from "@/calculator_history.vue";
+import Calculator_history from "@/components/calculator_history.vue";
 
 export default {
   name: 'app',
