@@ -20,14 +20,6 @@
         <div @click="append('0')" class="button zero">0</div>
         <div @click="dot" class="button">.</div>
         <div @click="equal" class="button operator">=</div>
-        <div class="history">
-            <h2>History</h2>
-            <ul>
-                <li v-for="(calculation, index) in calculation_history.slice().reverse()" :key="index">
-                    {{ calculation }}
-                </li>
-            </ul>
-        </div>
     </div>
 </template>
 
@@ -39,7 +31,6 @@
                 current: '',
                 operator: null,
                 operator_clicked: false,
-                calculation_history: [],
             }
         },
         methods: {
@@ -97,7 +88,8 @@
                     this.current = `${result}`;
                     this.previous = null;
 
-                    this.add_to_history(calc_string);
+                    this.$emit('update_history', `= ${calc_string}`);
+                    this.$emit('add_to_history', `= ${calc_string}`);
                 }
             },
             op_symbol_finder() {
@@ -105,7 +97,6 @@
                 const multiplyStr = (a, b) => a*b;
                 const addStr = (a, b) => a+b;
                 const subtractStr = (a, b) => a-b;
-                console.log(this.operator.toString())
 
                 if (this.operator.toString() === divideStr.toString()) return '/';
                 if (this.operator.toString() === multiplyStr.toString()) return '*';
@@ -113,13 +104,6 @@
                 if (this.operator.toString() === subtractStr.toString()) return '-';
 
                 return '';
-            },
-            add_to_history(calculation) {
-                this.calculation_history.push(calculation);
-                
-                if(this.calculation_history.length > 5) {
-                    this.calculation_history.shift();
-                }
             }
         }
     }
@@ -156,10 +140,6 @@
   color: white;
 }
 
-.history {
-    margin-top: 20px;
-}
-
 .history h2 {
     
     font-size: 18px;
@@ -173,7 +153,7 @@
 
 .history li {
     
-    width: px;
+    width: 1px;
     background-color: darkblue;
     font-size: 14px;
     margin-bottom: 5px;
