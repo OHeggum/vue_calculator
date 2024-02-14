@@ -1,48 +1,49 @@
+<script setup>
+import {RouterLink, RouterView} from "vue-router";
+</script>
 <template>
-    <div id="app">
-        <Calculator :calculation-history="calculation_history" @update_history="update_history" :add_to_history="add_to_history" ref="calculatorHistory" />
-        <Calculator_history :calculation-history="calculation_history" />
-    </div>
+  <div id="app">
+    <nav>
+      <RouterLink to="/">Calculator</RouterLink>
+      <RouterLink to="/contact">Contact us</RouterLink>
+    </nav>
+    <RouterView />
+  </div>
 </template>
 
-
-<script>
-import Calculator from './components/calculator_component.vue'
-import Calculator_history from "@/components/calculator_history.vue";
-
-export default {
-  name: 'app',
-  components: {
-    Calculator,
-    Calculator_history
-  },
-  data() {
-    return {
-      calculation_history:[],
-    }
-  },
-  methods: {
-    update_history(new_history) {
-      this.calculation_history.push(new_history);
-      console.log('i am running update_history')
-    },
-    add_to_history(calculation) {
-      this.$refs.calculatorHistory.add_to_history(calculation);
-      console.log('i am running add_to_history')
-    }
-  }
-}
-</script>
-
-<style>
-
+<style scoped>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
-  background-color: black;
+  text-align: center;
+  display: flex;
+  flex-flow: column;
+  gap: 10px;
+}
+nav {
+  width: 100%;
+  font-size: 24px;
+  text-align: center;
+}
+
+nav a.router-link-exact-active {
+  color: var(--color-text);
+}
+
+nav a.router-link-exact-active:hover {
+  background-color: transparent;
+}
+
+nav a {
+  display: inline-block;
+  padding: 20px 20px;
+  border-left: 1px solid var(--color-border);
+}
+
+nav a:first-of-type {
+  border: 0;
+}
+
+hr {
+  border-left: 1px solid var(--color-border);
 }
 </style>
