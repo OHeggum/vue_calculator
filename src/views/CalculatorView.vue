@@ -197,7 +197,7 @@ export default {
                   this.result = parseFloat(result);
                   this.displayValue = `${this.result}`;
                   this.sumPressed = true;
-                  this.result.push(`${this.previous} ${this.operator} ${this.current} = ${this.result}`);
+                  this.results.push(`${this.previous} ${this.operator} ${this.current} = ${this.result}`);
               })
               .catch(error => {
                   console.error('Error performing operation:', error);
