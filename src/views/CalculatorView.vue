@@ -15,6 +15,8 @@ import CalculatorNumpad from "../components/CalculatorNumpad.vue";
 </template>
 
 <script>
+import * as repl from "repl";
+
 export default {
     data() {
         return {
@@ -28,6 +30,7 @@ export default {
             hasComma: false,
             result: 0,
             results: [],
+            apiEnd: null
         };
     },
     methods: {
@@ -65,12 +68,14 @@ export default {
                     this.operator = `${value}`;
                     this.operatorFunction = (a, b) => a + b;
                     this.setPrevious(value);
+                    this.apiEnd = "add";
                     break;
                 }
                 case "-": {
                     this.operator = `${value}`;
                     this.operatorFunction = (a, b) => a - b;
                     this.setPrevious(value);
+                    this.apiEnd = "subtract";
                     break;
                 }
                 case "x": {
@@ -80,6 +85,7 @@ export default {
                     }
                     this.operatorFunction = (a, b) => a * b;
                     this.setPrevious(value);
+                    this.apiEnd = "multiply";
                     break;
                 }
                 case "/": {
@@ -89,6 +95,7 @@ export default {
                     }
                     this.operatorFunction = (a, b) => a / b;
                     this.setPrevious(value);
+                    this.apiEnd = "divide";
                     break;
                 }
                 case ".": {
@@ -168,24 +175,54 @@ export default {
             }
         },
         sum() {
-            if (
-                (this.previous === 0 || this.current === 0 || this.current === "0") &&
-                this.operator === "/"
-            ) {
-                alert("You cannot divide with 0! Resetting... (operator: " + this.operator + ")");
-                this.aclear();
-                return;
-            }
-            this.result = this.operatorFunction(
-                parseFloat(this.previous),
-                parseFloat(this.current)
-            );
-            this.displayValue = `${this.result}`;
-            this.sumPressed = true;
-            this.results.push(
-                `${this.previous} ${this.operator} ${this.current}${" = "}${this.result}`
-            );
+          const requestData = {
+              op1: parseFloat(this.previous),
+              op2: parseFloat(this.current)
+          };
+
+          fetch('http://localhost:8080/calculate/' + this.apiEnd, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(requestData)
+          })
+              .then(response => {
+                  if (!response.ok) {
+                      throw new Error('Failed to perform operation');
+                  }
+                  return response.text();
+              })
+              .then(result => {
+                  this.result = parseFloat(result);
+                  this.displayValue = `${this.result}`;
+                  this.sumPressed = true;
+                  this.result.push(`${this.previous} ${this.operator} ${this.current} = ${this.result}`);
+              })
+              .catch(error => {
+                  console.error('Error performing operation:', error);
+                  console.log('something went wrong, stay strong you got this')
+              })
         },
+//        sum() {
+//            if (
+//                (this.previous === 0 || this.current === 0 || this.current === "0") &&
+//                this.operator === "/"
+//            ) {
+//                alert("You cannot divide with 0! Resetting... (operator: " + this.operator + ")");
+//                this.aclear();
+//                return;
+//            }
+//            this.result = this.operatorFunction(
+//                parseFloat(this.previous),
+//                parseFloat(this.current)
+//            );
+//            this.displayValue = `${this.result}`;
+//            this.sumPressed = true;
+//            this.results.push(
+//                `${this.previous} ${this.operator} ${this.current}${" = "}${this.result}`
+//            );
+//        },
         logResult() {
         },
     },
