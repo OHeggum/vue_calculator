@@ -1,21 +1,14 @@
-import {defineStore} from "pinia";
+import { defineStore } from 'pinia'
 
-export const useCustomerStore = defineStore("token", {
+export const useCustomerStore = defineStore('customer', {
     state: () => ({
-        customer: {
-            name: null,
-            email: null,
-        },
+        name: '',
+        email: ''
     }),
-
     actions: {
-        async saveCustomerInStore(name, email) {
-            try {
-                this.customer.name = name;
-                this.customer.email = email;
-            } catch (error) {
-                console.log(error);
-            }
-        },
-    },
-});
+        saveCustomer(name, email) {
+            this.name = name;
+            this.email = email;
+        }
+    }
+})

@@ -1,16 +1,16 @@
 <script setup>
-import CalculatorDisplay from "@/components/CalculatorDisplay.vue";
-import CalculatorLog from "@/components/CalculatorLog.vue";
+import CalculatorDisplay from "../components/CalculatorDisplay.vue";
+import CalculatorLog from "../components/CalculatorLog.vue";
 import CalculatorNumpad from "../components/CalculatorNumpad.vue";
 </script>
 
 <template>
     <div class="app-wrapper">
         <div class="calculator-wrapper">
-            <CalculatorDisplay id="display" :display_value="display_value" />
+            <CalculatorDisplay id="display" :displayValue="displayValue" />
             <CalculatorNumpad @numpadClick="handleNumpadBtnClicked" />
         </div>
-        <CalculatorLog :log="results" @clearLogLick="handleClearLogBtnClicked" />
+        <CalculatorLog :log="results" @clearLogClick="handleClearLogBtnClicked" />
     </div>
 </template>
 
@@ -22,8 +22,8 @@ export default {
             current: 0,
             operator: null,
             operatorFunction: null,
-            operator_active: false,
-            display_value: "0",
+            operatorActive: false,
+            displayValue: "0",
             sumPressed: false,
             hasComma: false,
             result: 0,
@@ -34,48 +34,48 @@ export default {
         setPrevious(value) {
             this.previous = this.operatorFunction(
                 parseFloat(this.current),
-                parseFloat(this.previous),
+                parseFloat(this.previous)
             );
             this.current = "";
-            this.operator_active = true;
+            this.operatorActive = true;
             this.displayValue += `${value}`;
             this.hasComma = false;
         },
 
         checkOperatorActive() {
-            if (this.operator_active) {
-                alert("Operator already active (" + this.operator + ")");
+            if (this.operatorActive) {
+                alert("Operator already active! (" + this.operator + ")");
             }
         },
 
         handleNumberClicked(value) {
-            if (this.displayValue === "0") {
+            if (this.displayValue == "0") {
                 this.displayValue = `${value}`;
                 this.current = value;
             } else {
                 this.displayValue += `${value}`;
                 this.current += `${value}`;
             }
-            this.operator_active = false;
+            this.operatorActive = false;
         },
 
         handleOperatorClicked(value) {
-            switch(value) {
+            switch (value) {
                 case "+": {
                     this.operator = `${value}`;
-                    this.operatorFunction = (a, b) => a+b;
+                    this.operatorFunction = (a, b) => a + b;
                     this.setPrevious(value);
                     break;
                 }
                 case "-": {
                     this.operator = `${value}`;
-                    this.operatorFunction = (a, b) => a-b;
+                    this.operatorFunction = (a, b) => a - b;
                     this.setPrevious(value);
                     break;
                 }
                 case "x": {
                     this.operator = `${value}`;
-                    if (this.previous === 0) {
+                    if (this.previous == 0) {
                         this.previous = 1;
                     }
                     this.operatorFunction = (a, b) => a * b;
@@ -84,7 +84,7 @@ export default {
                 }
                 case "/": {
                     this.operator = `${value}`;
-                    if (this.previous === 0) {
+                    if (this.previous == 0) {
                         this.previous = 1;
                     }
                     this.operatorFunction = (a, b) => a / b;
@@ -127,13 +127,14 @@ export default {
             if (typeof value === "number") {
                 this.handleNumberClicked(value);
             } else if (typeof value === "string") {
-                if (this.operator_active) {
+                if (this.operatorActive) {
                     return;
                 }
                 this.handleOperatorClicked(value);
             } else {
-                alert("There was an error parsing the value of the button");
+                alert("There was an error parsing the value of the button!");
                 console.log(value);
+                return;
             }
         },
 
@@ -146,35 +147,32 @@ export default {
             this.current = 0;
             this.operator = null;
             this.operatorFunction = null;
-            this.operator_active = false;
+            this.operatorActive = false;
             this.hasComma = false;
             this.displayValue = "0";
         },
-
         ans() {
             this.current = this.result;
             this.displayValue = `${this.current}`;
         },
-
         del() {
             if (`${this.displayValue}`.length > 1) {
-                this.current = `${this.current}`.substring(0, this.current.length -1);
+                this.current = `${this.current}`.substring(0, this.current.length - 1);
                 this.displayValue = `${this.displayValue}`.substring(
                     0,
                     this.displayValue.length - 1
                 );
-            } else if (`${this.displayValue}`.length === 1) {
+            } else if (`${this.displayValue}`.length == 1) {
                 this.current = 0;
-                this.displayValue= "0";
+                this.displayValue = "0";
             }
         },
-
         sum() {
             if (
                 (this.previous === 0 || this.current === 0 || this.current === "0") &&
                 this.operator === "/"
             ) {
-                alert("divison by zero is lunacy.");
+                alert("You cannot divide with 0! Resetting... (operator: " + this.operator + ")");
                 this.aclear();
                 return;
             }
@@ -184,16 +182,17 @@ export default {
             );
             this.displayValue = `${this.result}`;
             this.sumPressed = true;
-            this.result.push(
+            this.results.push(
                 `${this.previous} ${this.operator} ${this.current}${" = "}${this.result}`
             );
+        },
+        logResult() {
         },
     },
 };
 </script>
 
 <style scoped>
-
 @media (width >= 820px) {
     .app-wrapper {
         display: flex;
@@ -202,7 +201,7 @@ export default {
     }
 }
 
-@media (width < 820 px) {
+@media (width < 820px) {
     .app-wrapper {
         display: flex;
         flex-flow: column;

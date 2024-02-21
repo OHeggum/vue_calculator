@@ -1,13 +1,13 @@
 <template>
     <div class="display">
-        {{display_value}}
+        {{ displayValue }}
     </div>
 </template>
 
 <script>
 export default {
     props: {
-        display_value: {
+        displayValue: {
             type: String,
             default: "0",
             required: false,
@@ -23,11 +23,11 @@ export default {
 }
 .display {
     background-color: #a8c64e;
-    border: 0.5px solid #333;
+    border: 1px solid #333;
     border-bottom: 0;
     border-radius: 10px 10px 0 0;
     color: black;
-    font-family: "calculator";
+    font-family: "calculator",serif;
     font-size: 2rem;
     line-height: 300%;
     text-align: center;

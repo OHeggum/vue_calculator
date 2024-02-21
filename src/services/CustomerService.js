@@ -12,8 +12,8 @@ const apiClient = axios.create({
 export default {
     async postCustomer(customer) {
         try {
-            const response = await apiClient.post("/customers", customer);
-            if (response.status === 201) {
+            const response = await apiClient.post("/posts", customer);
+            if (response.status === 200) {
                 return { success: true, data: response.data };
             } else {
                 return { success: false, message: "Failed to create customer"};

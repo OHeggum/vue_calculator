@@ -1,11 +1,11 @@
 <template>
-    <label v-if="label">{{label}}</label>
+    <label v-if="label"> {{ label }}</label>
     <input
         v-bind="$attrs"
-        :value="model_value"
+        :value="modelValue"
         :placeholder="label"
-        @input="$emit('update:model_value', $event.target.value)"
-        />
+        @input=""
+    />
 </template>
 
 <script>
@@ -15,7 +15,7 @@ export default {
             type: String,
             default: "",
         },
-        model_value: {
+        modelValue: {
             type: [String, Number],
             default: "",
         },

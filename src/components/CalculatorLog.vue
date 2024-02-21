@@ -4,7 +4,7 @@
             <div class="title-container">
                 <h1 class="title">Log</h1>
             </div>
-            <div id="clear-log-btn" @click="$emit('clear_log_click')">Clear Log</div>
+            <div id="clear-log-btn" @click="$emit('clearLogClick')">Clear Log</div>
 
         </div>
         <hr />

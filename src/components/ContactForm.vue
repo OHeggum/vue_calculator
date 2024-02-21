@@ -1,17 +1,27 @@
 <script setup>
 import { reactive, computed, ref, onBeforeMount } from "vue";
 import { required, email, minLength, helpers } from "@vuelidate/validators";
-import { useCustomerStore } from "../store/customerStore";
 import useVuelidate from "@vuelidate/core";
 import BaseInput from "../components/BaseInput.vue";
 import BaseTextArea from "../components/BaseTextArea.vue";
 import apiClient from "../services/CustomerService.js";
+import {useCustomerStore} from "@/store/customerStore.js";
 
-const customerStore = useCustomerStore();
+function updateName(event) {
+    piniaStore.name = event.target.value;
+    customer.name = event.target.value;
+}
+
+function updateEmail(event) {
+    piniaStore.email = event.target.value;
+    customer.email = event.target.value;
+}
+
+const piniaStore = useCustomerStore();
 
 const customer = reactive({
-    name: "",
-    email: "",
+    name: piniaStore.name,
+    email: piniaStore.email,
     message: "",
 });
 
@@ -35,29 +45,31 @@ const rules = computed(() => {
 const v$ = useVuelidate(rules, customer);
 
 async function submitForm() {
-    console.log("submitForm ran")
-    const result = await v$.value.$validate();
+    const result = await v$.value.$validate;
     if (result) {
         const response = await apiClient.postCustomer(customer);
         if (response.success) {
-            customerStore.saveCustomerInStore(customer.name, customer.email);
+            piniaStore.saveCustomer(customer.name, customer.email);
             v$.value.$reset();
             resetInputFields();
-            setResponseMessage("Form submitted successfully");
+            setResponseMessage("Form submitted successfully!");
         } else {
             setResponseMessage(
-                "an error occurred, please try again.\n" + response.message
+                "An error occurred. Please try again later.\nError details:\n" +
+                response.message
             );
         }
+    } else {
+        console.log("result equated to false")
     }
 }
 
-const has_errors = computed(() => {
+
+const hasErrors = computed(() => {
     return Object.keys(v$.value.$errors).length > 0;
 });
 
 const responseMessage = ref("");
-
 function setResponseMessage(message) {
     responseMessage.value = message;
 }
@@ -69,9 +81,11 @@ function resetInputFields() {
 }
 
 onBeforeMount(() => {
-    if (customerStore.customer) {
-        customer.name = customerStore.customer.name;
-        customer.email = customerStore.customer.email;
+    if (piniaStore.name) {
+        customer.name = piniaStore.name;
+    }
+    if (piniaStore.email) {
+        customer.email = piniaStore.email;
     }
 });
 </script>
@@ -86,6 +100,7 @@ onBeforeMount(() => {
             v-model="customer.name"
             label="Name"
             class="field"
+            @input="updateName"
         />
         <span v-for="error in v$.name.$errors" :key="error.$uid" class="field-error"
         >{{ error.$message }}
@@ -95,6 +110,7 @@ onBeforeMount(() => {
             v-model="customer.email"
             label="E-mail"
             class="field"
+            @input="updateEmail"
         />
         <span
             v-for="error in v$.email.$errors"
@@ -115,7 +131,7 @@ onBeforeMount(() => {
         >
       {{ error.$message }}
     </span>
-        <button id="submit-btn" type="submit" :disabled="has_errors">SUBMIT</button>
+        <button id="submit-btn" type="submit" :disabled="hasErrors">SUBMIT</button>
     </form>
     <span id="response-message" v-if="responseMessage">{{
             responseMessage
@@ -147,13 +163,14 @@ onBeforeMount(() => {
 }
 
 #submit-btn:disabled {
-    background-color: grey;
+    background-color: gray;
 }
 
 :deep(.field) {
     color: black;
     width: 500px;
 }
+
 :deep(label) {
     margin: 10px 0 10px 0;
 }

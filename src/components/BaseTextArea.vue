@@ -1,9 +1,10 @@
 <template>
-    <label v-if="label"> {{label}}</label>
+    <label v-if="label"> {{ label }}</label>
     <textarea
-        v-bind= "$attrs"
-        :value="model_value"
-        @placeholder="$emit('update:model_value', $event.target.value)"
+        v-bind="$attrs"
+        :value="modelValue"
+        :placeholder="label"
+        @input="$emit('update:modelValue', $event.target.value)"
     />
 </template>
 
@@ -11,26 +12,26 @@
 export default {
     props: {
         label: {
-            type:String,
+            type: String,
             default: "",
         },
-        model_value: {
+        modelValue: {
             type: [String, Number],
             default: "",
         },
     },
 };
-</script>'
+</script>
 
 <style scoped>
-label{
+label {
     font-size: 1.25rem;
 }
 
-textarea{
+textarea {
     border-radius: 10px;
     color: black;
-    font-family: "Helvetica", "sans-serif";
+    font-family: "Helvetica", sans-serif;
     font-size: 1rem;
     padding: 10px;
     height: 180px;
