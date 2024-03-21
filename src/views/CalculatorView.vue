@@ -2,7 +2,6 @@
 import CalculatorDisplay from "../components/CalculatorDisplay.vue";
 import CalculatorLog from "../components/CalculatorLog.vue";
 import CalculatorNumpad from "../components/CalculatorNumpad.vue";
-import calcHistoryLog from "@/components/CalcHistoryLog.vue";
 </script>
 
 <template>
@@ -12,7 +11,6 @@ import calcHistoryLog from "@/components/CalcHistoryLog.vue";
             <CalculatorNumpad @numpadClick="handleNumpadBtnClicked" />
         </div>
         <CalculatorLog :log="results" @clearLogClick="handleClearLogBtnClicked" />
-        <CalcHistoryLog></CalcHistoryLog>
     </div>
 </template>
 

@@ -1,23 +1,37 @@
-import { createRouter, createWebHistory} from "vue-router";
-import Calculator_view from "../views/CalculatorView.vue";
-import FormView from "../views/FormView.vue";
-import loginView from "@/views/LoginView.vue";
+// router/index.js
+import { createRouter, createWebHistory } from 'vue-router';
+import CalculatorView from '../views/CalculatorView.vue';
+import FormView from '../views/FormView.vue';
+import LoginView from "@/views/LoginView.vue";
+import { useAuthStore } from "@/store/authStore.js";
 
-export default createRouter({
+const router = createRouter({
     history: createWebHistory(),
     routes: [
         {
-            path: "/",
-            name: "login",
-            component: loginView,
+            path: '/calculator',
+            component: CalculatorView,
         },
         {
-            path: "/",
-            component: Calculator_view,
-        },
-        {
-            path: "/contact",
+            path: '/contact',
             component: FormView,
-        }
-    ]
-})
+            meta: { requiresAuth: true },
+        },
+        {
+            path: '/',
+            component: LoginView,
+            meta: { requiresAuth: false },
+        },
+    ],
+});
+
+router.beforeEach((to, from, next) => {
+    const authStore = useAuthStore();
+    if (to.meta.requiresAuth && !authStore.isLoggedIn) {
+        next('/login');
+    } else {
+        next();
+    }
+});
+
+export default router;

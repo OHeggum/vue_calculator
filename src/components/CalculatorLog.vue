@@ -1,99 +1,79 @@
 <template>
-    <div class = "log-wrapper">
-        <div class="log-header">
-            <div class="title-container">
-                <h1 class="title">Log</h1>
+    <div class="pagination-list">
+        <div class="pagination-item" v-for="(item, index) in paginatedItems" :key="index">
+            <div class="calculation">
+                <span>{{ item.num1 }}</span>
+                <span>{{ item.operator }}</span>
+                <span>{{ item.num2 }}</span>
+                <span>=</span>
+                <span>{{ item.result }}</span>
             </div>
-            <div id="clear-log-btn" @click="$emit('clearLogClick')">Clear Log</div>
-
         </div>
-        <hr />
-        <ul id="log-list">
-            <li v-for="log_item in log"> {{log_item}}</li>
-        </ul>
+        <div class="pagination-controls">
+            <button @click="previousPage" :disabled="currentPage === 1">Previous</button>
+            <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+        </div>
     </div>
 </template>
 
 <script>
 export default {
-    props: {
-        log: {
-            type: Array,
-            default: [],
-            required: false,
-        },
+    data() {
+        return {
+            items: []
+        };
     },
+    created() {
+        this.fetchCalculations();
+    },
+    methods: {
+        async fetchCalculations() {
+            try {
+                const response = await fetch('http://localhost:8080/getCalculations');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch calculations');
+                }
+                const data = await response.json();
+                this.items = data; // Assuming the response is an array of calculations
+            } catch (error) {
+                console.error('Error fetching calculations:', error);
+            }
+        }
+    }
 };
 </script>
 
-<style>
-* {
-    color: white;
-    user-select: none;
-}
-
-hr {
-    margin: 0 auto;
-    width: 90%;
-}
-
-.log-wrapper {
-    background-color: #333;
-    border-radius: 10px;
+<style scoped>
+.pagination-list {
     display: flex;
-    flex-flow: column;
-    width: 400px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    max-width: 400px; /* Set a maximum width */
+    margin: 0 auto; /* Center the component */
 }
 
-.log-header {
+.pagination-item {
+    width: 100%; /* Make each item take full width */
+    margin-bottom: 10px;
+}
+
+.calculation {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    position: sticky;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
-.title-container {
-    display: flex;
-    justify-content: center;
-    margin-left: 140px;
-    flex-grow: 1;
-}
-
-.title {
-    font-size: 2rem;
-    margin: 10px;
-}
-
-#clear-log-btn {
-    border-radius: 10px;
-    font-size: 1.5rem;
-    margin: 10px;
-    padding: 10px;
-}
-
-#clear-log-btn:hover {
-    background-color: #222;
+button {
+    margin-top: 10px;
+    padding: 5px 10px;
     cursor: pointer;
 }
 
-#clear-log-btn:active {
-    background-color: #111;
-}
-
-#log-list::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-    border-radius: 10px;
-    background-color: #f5f5f5;
-}
-
-#log-list::-webkit-scrollbar {
-    width: 12px;
-    background-color: #f5f5f5;
-    border-radius: 10px;
-}
-
-#log-list::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-    background-color: #555;
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
 }
 </style>

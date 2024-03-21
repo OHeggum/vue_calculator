@@ -14,44 +14,22 @@
         </form>
     </div>
 </template>
+// Login.vue
+<script setup>
+import { useAuthStore } from '../store/authStore';
+import {ref} from "vue";
+import {useRouter} from "vue-router";
 
-<script>
-export default {
-    data() {
-        return {
-            name: '',
-            password: ''
-        };
-    },
-    methods: {
-        loginOrRegister() {
-            const requestData = {
-                name: this.name,
-                password: this.password
-            };
+const name = ref('');
+const password = ref('');
+const router = useRouter();
 
-            fetch('http://localhost:8080/loginOrRegister', { // Update the URL to match your backend endpoint
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(requestData)
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Failed to login or register');
-                    }
-                    // Handle successful login or registration response here
-                    // For example, you might redirect the user to the home page or display a success message
-                    console.log('Login or registration successful');
-                    // Redirect to home page or perform other actions as needed
-                })
-                .catch(error => {
-                    console.error('Error logging in or registering:', error);
-                    // Handle error, such as displaying an error message to the user
-                    console.log('Something went wrong, please try again.');
-                });
-        }
+const loginOrRegister = async () => {
+    try {
+        await useAuthStore().loginOrRegister(name.value, password.value);
+        await router.push('/');
+    } catch (error) {
+        console.log(error.message);
     }
 };
 </script>
